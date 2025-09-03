@@ -234,8 +234,10 @@ public class AutomateHL {
             System.out.println("Certificate Expiry: " + expiryText);
 
             Thread.sleep(1000);
-            saveResult(driver, screenshotFolder, path, "06_domain_expiry.png", "6. Domain Expiry check Report Link");
-
+            saveResult(driver, screenshotFolder, path,
+                    "06_domain_expiry.png",
+                    "6. Domain Expiry check Report Link",
+                    expiryText);
             // ================== SSL Labs ==================
             driver.get("https://www.ssllabs.com/ssltest");
             driver.findElement(By.xpath("//input[@name='d']")).sendKeys(testUrl);
@@ -328,17 +330,27 @@ public class AutomateHL {
     }
 
     // ------------------- Helper Method -------------------
+ // Overloaded helper method
     private static void saveResult(WebDriver driver, String folder, Path path,
-            String fileName, String label) throws IOException {
+            String fileName, String label, String extraInfo) throws IOException {
         File ss = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(ss, new File(folder + "\\" + fileName));
 
         String currentUrl = driver.getCurrentUrl();
-        Files.write(
-            path,
-            (label + ": " + currentUrl + "\n").getBytes(),
-            StandardOpenOption.APPEND
-        );
-        System.out.println(label + ": " + currentUrl);
+        String line = label + ": " + currentUrl;
+        if (extraInfo != null && !extraInfo.isEmpty()) {
+            line += " | " + extraInfo;
+        }
+        line += "\n";
+
+        Files.write(path, line.getBytes(), StandardOpenOption.APPEND);
+        System.out.println(line);
     }
+
+    // Existing method stays the same for other calls
+    private static void saveResult(WebDriver driver, String folder, Path path,
+            String fileName, String label) throws IOException {
+        saveResult(driver, folder, path, fileName, label, null);
+    }
+
 }
