@@ -47,6 +47,12 @@ The project includes a Google Apps Script that:
 
 Script file: `report-generator.gs`
 
+## Google Apps Script
+
+The report generation logic is available in:
+
+google-apps-script/report-generator.gs
+
 ## Author
 
 Tista Dutta
